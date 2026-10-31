@@ -1,39 +1,60 @@
 <!doctype html><html lang="__LANG__"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1"><title>photo-cull</title>
-<!-- 一体窗口：照片筛选、照片编辑各放一个 iframe，切换时只切换显示，两边的状态都保留。
-     两个界面通过 postMessage 通知这里：{pc:"switch", to}、{pc:"open-edit", path}、{pc:"edit-path", path}、{pc:"lang"}。
+<!-- 一体窗口：照片筛选、照片编辑（和装了的话胶片冲印）各放一个 iframe，切换时只切换显示，状态都保留。
+     胶片冲印是单独的程序（单独的仓库和许可证），第一次切过去时通过 /api/film 启动。
+     两个界面通过 postMessage 通知这里：{pc:"switch", to}、{pc:"open-edit", path}、{pc:"open-film", path}、{pc:"edit-path", path}、{pc:"lang"}。
      当前界面和编辑中的照片记在地址里（start、path），整页刷新后能回到原处。 -->
 <link rel="stylesheet" href="/static/common/tokens.css?v=__VER__">
 <style>
 html,body{margin:0;height:100%;background:var(--bg);overflow:hidden}
 iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:none;background:var(--bg)}
 iframe.on{display:block}
+.msg{position:absolute;inset:0;display:none;align-items:center;justify-content:center;color:var(--mut);font:14px var(--font-sans);padding:40px;text-align:center}
+.msg.on{display:flex}.msg.hidden{display:none}
 </style>
 <script>window.I18N=__I18N__;</script>
 <script src="/static/common/i18n.js?v=__VER__"></script>
 </head><body>
 <iframe id="f-cull" data-src="__CULL_URL__" title="cull"></iframe>
 <iframe id="f-edit" data-src="__EDIT_URL__" title="edit"></iframe>
+<iframe id="f-film" title="film"></iframe>
+<div id="filmMsg" class="msg hidden"></div>
 <script>
-const FR={cull:document.getElementById("f-cull"),edit:document.getElementById("f-edit")};
-const ORIGIN={cull:new URL(FR.cull.dataset.src).origin,edit:new URL(FR.edit.dataset.src).origin};
-let cur=null;
-function show(app){if(!FR[app])return;cur=app;
- Object.entries(FR).forEach(([k,f])=>{if(k==app&&!f.src)f.src=f.dataset.src;f.classList.toggle("on",k==app)});
+const TOKEN=new URL(FR_CULL_SRC()).searchParams.get("t");
+function FR_CULL_SRC(){return document.getElementById("f-cull").dataset.src}
+const FR={cull:document.getElementById("f-cull"),edit:document.getElementById("f-edit"),film:document.getElementById("f-film")};
+const ORIGIN={cull:new URL(FR.cull.dataset.src).origin,edit:new URL(FR.edit.dataset.src).origin,film:null};
+const APPS=["cull","edit"].concat(I18N.film?["film"]:[]);
+let cur=null,filmPending=null;
+// 胶片冲印是单独的程序：第一次切过去时请照片筛选的服务把它启动起来（已在运行就直接用），拿到地址再加载
+async function ensureFilm(path){
+ if(FR.film.src){if(path)FR.film.contentWindow.postMessage({pc:"open",path},ORIGIN.film);return true}
+ if(filmPending)return filmPending;
+ const msg=document.getElementById("filmMsg");msg.textContent=T("common.film_starting");msg.classList.remove("hidden");
+ filmPending=fetch(new URL("/api/film",ORIGIN.cull),{method:"POST",headers:{"X-Token":TOKEN,"Content-Type":"application/json"},body:"{}"})
+  .then(async r=>{const j=await r.json().catch(()=>({}));if(!r.ok||!j.url)throw new Error(j.error||r.statusText);
+   const u=new URL(j.url);u.searchParams.set("shell","1");if(path)u.searchParams.set("path",path);ORIGIN.film=u.origin;FR.film.src=u.href;msg.classList.add("hidden");return true})
+  .catch(e=>{msg.textContent=e.message;return false}).finally(()=>{filmPending=null});
+ return filmPending}
+function show(app){if(!FR[app]||(app=="film"&&!I18N.film))return;cur=app;
+ if(app=="film")ensureFilm();
+ Object.entries(FR).forEach(([k,f])=>{if(k==app&&!f.src&&f.dataset.src)f.src=f.dataset.src;f.classList.toggle("on",k==app)});
+ document.getElementById("filmMsg").classList.toggle("on",app=="film");
  document.title=T("common.app."+app)+" · "+T("common.app.suite");
  try{FR[app].contentWindow.focus()}catch(e){}
  setParam("start",app)}
 addEventListener("message",e=>{
- const from=Object.keys(ORIGIN).find(k=>ORIGIN[k]===e.origin);if(!from)return;const d=e.data||{};
+ const from=Object.keys(ORIGIN).find(k=>ORIGIN[k]&&ORIGIN[k]===e.origin);if(!from)return;const d=e.data||{};
  if(d.pc=="switch")show(d.to);
  else if(d.pc=="open-edit"&&d.path){if(!FR.edit.src){const u=new URL(FR.edit.dataset.src);u.searchParams.set("path",d.path);FR.edit.dataset.src=u.href}
   else FR.edit.contentWindow.postMessage({pc:"open",path:d.path},ORIGIN.edit);show("edit")}
+ else if(d.pc=="open-film"&&d.path){ensureFilm(d.path);show("film")}
  else if(d.pc=="edit-path"&&from=="edit"){setParam("path",d.path||"")}
- else if(d.pc=="lang")location.reload()});   // 整个窗口刷新：两个界面都换成新语言，并回到当前的界面和照片
+ else if(d.pc=="lang")location.reload()});   // 整个窗口刷新：界面都换成新语言，并回到当前的界面和照片
 function setParam(k,v){try{const u=new URL(location.href);if(v)u.searchParams.set(k,v);else u.searchParams.delete(k);history.replaceState(null,"",u.href)}catch(e){}}
-addEventListener("keydown",e=>{if((e.metaKey||e.ctrlKey)&&(e.key=="1"||e.key=="2")){e.preventDefault();show(e.key=="1"?"cull":"edit")}});
+addEventListener("keydown",e=>{const i="123".indexOf(e.key);if((e.metaKey||e.ctrlKey)&&i>=0&&APPS[i]){e.preventDefault();show(APPS[i])}});
 show("__START__");
-// 另一个界面在后台预先加载，第一次切换也是瞬间
-setTimeout(()=>Object.values(FR).forEach(f=>{if(!f.src)f.src=f.dataset.src}),1200);
+// 照片筛选、照片编辑在后台预先加载，第一次切换也是瞬间（胶片冲印要单独启动，用到时再开）
+setTimeout(()=>[FR.cull,FR.edit].forEach(f=>{if(!f.src)f.src=f.dataset.src}),1200);
 </script>
 </body></html>

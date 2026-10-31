@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from . import film
+
 import json
 import mimetypes
 import os
@@ -184,12 +186,19 @@ class Handler(BaseHTTPRequestHandler):
         except json.JSONDecodeError:
             return self._json({"error": "bad json"}, 400)
         path = urlparse(self.path).path
-        shared = path in ("/api/choose", "/api/quit", "/api/lang")
+        shared = path in ("/api/choose", "/api/quit", "/api/lang", "/api/film")
         if not shared and (self.app == "edit") != path.startswith("/api/edit/"):
             return self._send(404, b"not found")
         try:
             if path == "/api/lang":
                 return self._json({"lang": set_language(body.get("lang"))})
+            if path == "/api/film":                            # 胶片冲印：没在运行就启动它（独立进程），返回它的地址
+                if not film.installed():
+                    return self._json({"installed": False, "error": t("server.film_missing")}, 404)
+                url = film.start()
+                if not url:
+                    return self._json({"installed": True, "error": t("server.film_failed")}, 503)
+                return self._json({"installed": True, "url": url})
             if path == "/api/open_report":                     # Mac 应用的窗口里不能开新标签页：用默认浏览器打开报告
                 if not JOB.result:
                     raise ValueError(t("server.no_result"))

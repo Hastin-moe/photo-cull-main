@@ -34,6 +34,11 @@
 - 接口：`/api/mark` 的参数由 `stars` 改为 `score`（−1 到 10）；整理接口增加 `org_category`。
 - 原始结构存档见 `docs/架构-1.7.1原始结构.md`。
 
+### 第三模块：胶片冲印（单独的程序）
+- 新仓库 **photo-cull-film**（GPLv3，基于 spektrafilm 的光谱胶片模拟，中文界面），和照片工具分开安装、分开运行。
+- 照片工具这边：装了胶片冲印以后，一体窗口多一个「胶片冲印」页签（⌘3），照片编辑工具栏多一个「胶片冲印」按钮；需要时自动把它作为独立进程启动（`photo_cull/server/film.py`、`/api/film`）。照片工具不导入它的任何代码，仍是 MIT。
+- 可行性研究见 `docs/第三模块-spektrafilm可行性.md`。
+
 ### 多语言
 - 新增**韩语**（한국어）：界面、报告、日志、AI 评语全覆盖；新增 `README.ko.md`、`CONTRIBUTING.ko.md`。
 

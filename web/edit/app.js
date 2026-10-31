@@ -182,7 +182,9 @@ async function openPhoto(path){pill("edit.pill.decoding","run");warn("");try{con
   listUI();syncUI();schedule("full");
   try{const u=new URL(location.href);u.searchParams.set("path",path);history.replaceState(null,"",u.href)}catch(e){}   // 刷新后还打开这一张
   if(window.shellPost)shellPost({pc:"edit-path",path});
+  window.CUR_PATH=path;$("toFilm").disabled=false;
  }catch(e){pill("edit.pill.error","err");warn(T("edit.err.open",{err:e.message}))}}
+if(window.SHELL&&I18N.film){$("toFilm").classList.remove("hidden");$("toFilm").onclick=()=>window.CUR_PATH&&shellPost({pc:"open-film",path:window.CUR_PATH})}
 $("openFolder").onclick=()=>openFolder();$("folder").onkeydown=e=>{if(e.key=="Enter")openFolder()};$("rawOnly").onchange=listUI;
 $("pick").onclick=async()=>{try{const r=await api("/api/choose",{start:$("folder").value});if(r.folder)openFolder(r.folder)}catch(e){alert(e.message)}};
 // ───── 工具栏

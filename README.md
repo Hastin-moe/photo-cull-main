@@ -5,6 +5,7 @@
 工具包含两个程序，放在**同一个窗口**里，右上角一点就切换（⌘1／⌘2），两边的进度和状态都保留。macOS 上可以打包成独立的 **「照片工具.app」**，双击就用，不需要终端（见下文「Mac 应用」）：
 
 - **照片筛选**（双击 `启动筛选.command`）：先在本地做技术筛选，包括对焦、模糊、曝光、人脸与闭眼检测，以及连拍和同场景重拍分组，每组连拍按「精彩帧权重」挑出一张。挑出来的照片可以再交给 **Claude、ChatGPT、Grok、Gemini、DeepSeek**，或任何 OpenAI 兼容的视觉模型（通义千问、Kimi、豆包、OpenRouter、本地 Ollama 等）做审美细评。评分是 **10 分制**：本地技术分最高 6 分，6 分以上只由 AI 给出。分数折算成**星级和色标**写进 XMP，Lightroom Classic 和 Capture One 都能读到，同时生成一份可以直接操作的网页报告。
+- **胶片冲印**（单独安装的第三个模块，[photo-cull-film](https://github.com/Hastin-moe/photo-cull-film)，GPLv3）：用 [spektrafilm](https://github.com/andreavolpato/spektrafilm) 做光谱级的胶片模拟（负片、相纸、颗粒、光晕）。装了以后一体窗口多一个「胶片冲印」页签。
 - **照片编辑**（双击 `启动编辑.command`，基础版）：对整张画面做调整，包括曲线、直方图和波形图监看；可以套用 `.cube` LUT 和 Lightroom／Photoshop 的 XMP 预设，最后导出 JPEG 或 16 位 TIFF。支持徕卡 DNG、松下 DNG、索尼全部 ARW、富士 RAF。
 
 **界面语言**：简体中文、English、日本語、한국어，在两个程序右上角切换（两个程序同步）。报告页、运行日志和 AI 评语都跟随所选语言；第一次打开时按浏览器语言自动选择。

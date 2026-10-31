@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from . import film
+
 from ..paths import WEB
 
 import json
@@ -38,7 +40,7 @@ def lang_bundle(prefixes=None, lang=None) -> dict:
 def render_page(app: str) -> bytes:
     """web/<app>/index.html ＋ 版本号、语言、语言包。每次请求都读文件：改界面不用重启程序。"""
     html_ = (WEB / app / "index.html").read_text(encoding="utf-8")
-    data = json.dumps(lang_bundle(), ensure_ascii=False).replace("</", "<\\/")
+    data = json.dumps({**lang_bundle(), "film": film.installed()}, ensure_ascii=False).replace("</", "<\\/")
     return (html_.replace("__VER__", VERSION).replace("__LANG__", i18n.html_lang())
             .replace("__I18N__", data)).encode("utf-8")
 EDIT_GET = {"/api/edit/thumb", "/api/edit/state", "/api/edit/export_status"}
@@ -63,10 +65,10 @@ def render_shell(start: str = "cull", path: str = "") -> bytes | None:
     base = lambda app: f"http://127.0.0.1:{LOCAL[app]['port']}/?t={quote(TOKEN)}&shell=1"
     edit_url = base("edit") + (f"&path={quote(path)}" if path else "")
     page = (WEB / "shell" / "index.html").read_text(encoding="utf-8")
-    data = json.dumps(lang_bundle(("common",)), ensure_ascii=False).replace("</", "<\\/")
+    data = json.dumps({**lang_bundle(("common",)), "film": film.installed()}, ensure_ascii=False).replace("</", "<\\/")
     for k, v in {"__VER__": VERSION, "__LANG__": i18n.html_lang(), "__I18N__": data,
                  "__CULL_URL__": base("cull"), "__EDIT_URL__": edit_url,
-                 "__START__": start if start in APP_NAMES else "cull"}.items():
+                 "__START__": start if start in (*APP_NAMES, "film") else "cull"}.items():
         page = page.replace(k, v)
     return page.encode("utf-8")
 

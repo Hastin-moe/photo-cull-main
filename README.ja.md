@@ -5,6 +5,7 @@
 photo-cull には 2 つのプログラムが**1 つのウィンドウ**に入っていて、右上でいつでも切り替えられます（⌘1／⌘2）。どちらの状態も保たれます。macOS ではターミナル不要の **「照片工具.app」** として単体アプリにできます（下の「Mac アプリ」を参照）。
 
 - **写真セレクト**（macOS は `启动筛选.command`、Windows は `启动筛选.bat` をダブルクリック）：パソコン上で技術的なセレクトを行います。ピント、ブレ、露出、顔と目つぶりの検出、連写や同じシーンの撮り直しのグループ分けを行い、連写ごとに「決定瞬間の重み」で 1 枚を選びます。選ばれた写真は **Claude、ChatGPT、Grok、Gemini、DeepSeek**、または OpenAI 互換の任意のビジョンモデル（OpenRouter、Qwen、ローカルの Ollama など）で講評できます。点数は **10 点満点**で、ローカルの技術点は最高 6 点、6 点を超える点数は AI だけが付けます。点数は**レーティングとカラーラベル**に換算して XMP に書き込まれ、Lightroom Classic と Capture One の両方で読めます。操作できる Web レポートも作成します。
+- **フィルム現像**（別途インストールする 3 つ目のモジュール [photo-cull-film](https://github.com/Hastin-moe/photo-cull-film)、GPLv3、現在は中国語の画面のみ）：[spektrafilm](https://github.com/andreavolpato/spektrafilm) によるスペクトルのフィルムシミュレーション。インストールするとウィンドウに 3 つ目のタブが増えます。
 - **写真編集**（`启动编辑.command`／`启动编辑.bat`、ベーシック版）：画面全体の補正、トーンカーブ、ヒストグラムと波形モニター。`.cube` LUT と Lightroom／Photoshop の XMP プリセットを適用し、JPEG または 16 ビット TIFF で書き出します。Leica DNG、Panasonic DNG、すべての Sony ARW、富士フイルム RAF に対応。
 
 > 起動ファイル名は中国語のままです：`安装环境`＝環境のインストール、`启动筛选`＝写真セレクトを起動、`启动编辑`＝写真編集を起動。

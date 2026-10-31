@@ -28,9 +28,11 @@
   "app": {
    "cull": "Photo Cull",
    "edit": "Photo Edit",
-   "suite": "Photo Tools"
+   "suite": "Photo Tools",
+   "film": "Film Lab"
   },
-  "sep": "; "
+  "sep": "; ",
+  "film_starting": "Starting Film Lab… The first start loads spektrafilm and can take a dozen seconds."
  },
  "cull": {
   "title": "Photo Cull",
@@ -288,7 +290,9 @@
   "close_hint": "Close this terminal window to quit.",
   "already_running": "Photo Tools is already running; opening it:",
   "app_quit": "Close the window to quit.",
-  "bad_score": "The score must be from -1 (reject) to 10"
+  "bad_score": "The score must be from -1 (reject) to 10",
+  "film_missing": "Film Lab was not found. It is a separate program: download photo-cull-film and run its install script, then try again.",
+  "film_failed": "Film Lab could not start. Double-click 启动胶片冲印.command in its folder to see the message."
  },
  "flag": {
   "blur": "Out of focus or blurry",
@@ -413,7 +417,9 @@
    "copy": "Copy settings",
    "paste": "Paste settings",
    "reset": "Reset all",
-   "reset_confirm": "Reset all adjustments for this photo?"
+   "reset_confirm": "Reset all adjustments for this photo?",
+   "film": "Film Lab",
+   "film_tip": "Send this photo to Film Lab (spektrafilm spectral film simulation)"
   },
   "empty": {
    "title": "Edit",

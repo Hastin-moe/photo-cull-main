@@ -5,6 +5,7 @@
 photo-cull에는 두 프로그램이 **창 하나**에 함께 들어 있습니다. 오른쪽 위에서 바로 전환하며(⌘1／⌘2) 양쪽의 진행 상태는 그대로 유지됩니다. macOS에서는 터미널이 필요 없는 독립 실행형 **照片工具.app**으로 패키징할 수 있습니다(아래 「Mac 앱」 참고).
 
 - **사진 선별**(macOS는 `启动筛选.command`, Windows는 `启动筛选.bat`을 더블클릭): 내 컴퓨터에서 기술적인 선별을 합니다. 초점, 흐림, 노출, 얼굴과 눈 감음 검출, 연사와 같은 장면 재촬영의 그룹 나누기를 하고, 연사마다 「결정적 순간 가중치」로 한 장을 고릅니다. 고른 사진은 **Claude, ChatGPT, Grok, Gemini, DeepSeek** 또는 OpenAI 호환 비전 모델(Qwen, Kimi, OpenRouter, 로컬 Ollama 등)로 미적 평가를 받을 수 있습니다. 점수는 **10점 만점**이며 로컬 기술 점수는 최고 6점, 6점을 넘는 점수는 AI만 줍니다. 점수는 **별점과 색상 라벨**로 환산해 XMP에 쓰므로 Lightroom Classic과 Capture One에서 모두 읽을 수 있고, 바로 조작할 수 있는 웹 보고서도 만들어집니다.
+- **필름 현상**(별도로 설치하는 세 번째 모듈 [photo-cull-film](https://github.com/Hastin-moe/photo-cull-film), GPLv3, 지금은 중국어 화면만): [spektrafilm](https://github.com/andreavolpato/spektrafilm)으로 분광 필름 시뮬레이션. 설치하면 창에 세 번째 탭이 생깁니다.
 - **사진 편집**(`启动编辑.command`／`启动编辑.bat`, 기본판): 화면 전체 조정, 곡선, 히스토그램과 파형 모니터. `.cube` LUT와 Lightroom／Photoshop XMP 프리셋을 적용하고 JPEG 또는 16비트 TIFF로 내보냅니다. Leica DNG, Panasonic DNG, 모든 Sony ARW, 후지필름 RAF를 지원합니다.
 
 > 실행 파일 이름은 중국어 그대로입니다: `安装环境`＝환경 설치, `启动筛选`＝사진 선별 실행, `启动编辑`＝사진 편집 실행.

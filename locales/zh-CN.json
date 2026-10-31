@@ -28,9 +28,11 @@
   "app": {
    "cull": "照片筛选",
    "edit": "照片编辑",
-   "suite": "照片工具"
+   "suite": "照片工具",
+   "film": "胶片冲印"
   },
-  "sep": "；"
+  "sep": "；",
+  "film_starting": "正在启动胶片冲印…第一次启动要加载 spektrafilm，可能需要十几秒。"
  },
  "cull": {
   "title": "照片筛选",
@@ -288,7 +290,9 @@
   "close_hint": "关闭这个终端窗口即可退出。",
   "already_running": "照片工具已经在运行，打开现有窗口：",
   "app_quit": "关闭窗口即可退出。",
-  "bad_score": "分数必须是 -1（淘汰）到 10"
+  "bad_score": "分数必须是 -1（淘汰）到 10",
+  "film_missing": "没有找到胶片冲印。它是单独的程序：下载 photo-cull-film，运行它的「安装环境」后再试。",
+  "film_failed": "胶片冲印没能启动。请在它的文件夹里双击「启动胶片冲印.command」看看提示。"
  },
  "flag": {
   "blur": "失焦或模糊",
@@ -413,7 +417,9 @@
    "copy": "复制设置",
    "paste": "粘贴设置",
    "reset": "全部重置",
-   "reset_confirm": "把这张照片的所有调整恢复默认？"
+   "reset_confirm": "把这张照片的所有调整恢复默认？",
+   "film": "胶片冲印",
+   "film_tip": "把这张照片送到胶片冲印（spektrafilm 光谱胶片模拟）"
   },
   "empty": {
    "title": "编辑",
