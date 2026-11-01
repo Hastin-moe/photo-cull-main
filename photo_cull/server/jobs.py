@@ -1,18 +1,23 @@
 from __future__ import annotations
 
-from ..cull.scoring import HIGHLIGHT_WEIGHTS
-
 import contextlib
 import io
+import shutil
 import threading
+import time
 import traceback
+from pathlib import Path
 
 from ..cull import state as _state
 from ..cull.ai.providers import PROVIDERS
 from ..cull.cli import main
+from ..cull.scoring import HIGHLIGHT_WEIGHTS
 from ..cull.state import CANCEL, Cancelled
 from ..i18n import t
+from ..paths import LOG_DIR
 from .settings import DEFAULTS
+
+RUN_LOG = LOG_DIR / "last-run.log"         # 最近一次筛选的完整运行日志（上一次的是 prev-run.log）
 
 # ───────────────────────── 任务状态 ─────────────────────────
 
@@ -48,6 +53,11 @@ class Job:
     def log(self, line):
         with self.lock:
             self.lines.append(line)
+        try:                                   # 同时写进 ~/.photo-cull/logs/last-run.log，界面关掉以后也能查
+            with open(RUN_LOG, "a", encoding="utf-8") as f:
+                f.write(line + "\n")
+        except OSError:
+            pass
 
     def snapshot(self, since: int) -> dict:
         with self.lock:
@@ -106,6 +116,16 @@ def build_argv(o: dict) -> list[str]:
 
 def run_job(options: dict):
     JOB.reset()
+    try:
+        RUN_LOG.parent.mkdir(parents=True, exist_ok=True)
+        if RUN_LOG.exists():
+            RUN_LOG.replace(RUN_LOG.with_name("prev-run.log"))
+        prov = options.get("provider", "claude")
+        RUN_LOG.write_text(f"── {time.strftime('%Y-%m-%d %H:%M:%S')} 筛选 {options.get('folder', '')}"
+                           f"（AI：{prov + ' ' + str(options.get('model_' + prov) or '') if options.get('ai') else '关'}）──\n",
+                           encoding="utf-8")
+    except OSError:
+        pass
     JOB.running = True
     JOB.ai = bool(options.get("ai"))
     CANCEL.clear()
@@ -124,6 +144,11 @@ def run_job(options: dict):
         JOB.error = f"{type(e).__name__}: {e}"
         JOB.log(traceback.format_exc())
     finally:
+        try:
+            if JOB.result and JOB.result.get("out"):
+                shutil.copy2(RUN_LOG, Path(JOB.result["out"]) / "run.log")
+        except OSError:
+            pass
         JOB.running = False
         _state.PROGRESS = None
         _state.API_KEYS = {}

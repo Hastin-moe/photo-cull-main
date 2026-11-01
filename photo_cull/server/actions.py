@@ -1,24 +1,19 @@
 from __future__ import annotations
 
-from ..paths import REPORT_DIR
-
-from ..cull.scoring import set_manual
-
-from ..cull.organize import Layout
-
-from types import SimpleNamespace
-
 import os
 import subprocess
 import sys
 from dataclasses import asdict
 from pathlib import Path
+from types import SimpleNamespace
 
-from ..cull.organize import org_resync, org_trash_copies, organize
+from ..cull.organize import Layout, org_resync, org_trash_copies, organize
 from ..cull.report import load_results, summarize, write_report
+from ..cull.scoring import set_manual
 from ..cull.trash import TRASH_DIR, trash_photo
 from ..cull.xmp import apply_marks
 from ..i18n import t
+from ..paths import REPORT_DIR
 from .jobs import JOB
 from .settings import _remember
 

@@ -1,9 +1,5 @@
 from __future__ import annotations
 
-from ..paths import FROZEN
-
-from ..paths import ROOT
-
 import atexit
 import json
 import os
@@ -14,6 +10,7 @@ from pathlib import Path
 
 from .. import i18n
 from ..cull.report import write_report
+from ..paths import FROZEN, ROOT
 from .actions import _current
 from .jobs import JOB
 from .settings import CONFIG_DIR

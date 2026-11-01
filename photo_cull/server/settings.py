@@ -1,16 +1,11 @@
 from __future__ import annotations
 
-from ..cull.scoring import HIGHLIGHT_WEIGHTS, PICK_AI, PICK_LOCAL
-
-from ..paths import SETTINGS
-
-from ..paths import CONFIG_DIR
-
 import json
 import os
 
 from ..cull.ai.providers import PROVIDERS
-
+from ..cull.scoring import HIGHLIGHT_WEIGHTS, PICK_AI, PICK_LOCAL
+from ..paths import CONFIG_DIR, SETTINGS
 
 CONFIG = SETTINGS
 

@@ -58,6 +58,8 @@ def test_run_mark_organize():
     assert st["result"] and not st["error"], st.get("error")
     r = st["result"]
     assert r["moment"] == 1 and r["bursts"] == 1, r
+    log = (SRC / "photo-cull-report" / "run.log").read_text(encoding="utf-8")     # 运行日志存进报告文件夹
+    assert "筛选" in log and "本地分析完成" in log
     assert "--weights" in json.dumps(st["lines"]) or True
     out = SRC / "整理输出"
     single = next(p for p in out.rglob("*DSC02100.JPG"))

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
-from ..paths import LUT_DIR, USER_LUT_DIR, LUT_ALIASES, CONFIG_DIR
-
 import json
 from pathlib import Path
+
+from ..paths import CONFIG_DIR, LUT_ALIASES, LUT_DIR, USER_LUT_DIR
 
 # 内置 LUT：工具文件夹里的 luts/（39 个，工作空间均为 sRGB：Fujifilm GFX 胶片模拟 20、Leica Look 19），拷到别的电脑也能直接用。
 # 编辑记录里写成「builtin:相对路径」，不依赖这台电脑上的绝对路径。

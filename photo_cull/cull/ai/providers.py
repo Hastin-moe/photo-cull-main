@@ -92,8 +92,25 @@ def make_caller(provider: str, model: str):
     raise ValueError(api)
 
 
+_SSL = None
+
+
+def _ssl_context():
+    """HTTPS 证书：优先用 certifi 带的根证书。打包成 Mac 应用后（以及系统自带的 Python 3.9）
+    默认找不到系统根证书，直接用标准库访问 HTTPS 会报 CERTIFICATE_VERIFY_FAILED。"""
+    global _SSL
+    if _SSL is None:
+        import ssl
+        try:
+            import certifi
+            _SSL = ssl.create_default_context(cafile=certifi.where())
+        except Exception:
+            _SSL = ssl.create_default_context()
+    return _SSL
+
+
 def _post_json(url: str, body: dict, headers: dict, label: str) -> dict:
-    """POST JSON，遇到限流／服务端错误时退避重试（最多 4 次）。只用标准库。"""
+    """POST JSON，遇到限流／服务端错误时退避重试（最多 4 次）。只用标准库（证书用 certifi）。"""
     import urllib.error
     import urllib.request
     req = urllib.request.Request(url, data=json.dumps(body).encode("utf-8"), method="POST",
@@ -101,7 +118,7 @@ def _post_json(url: str, body: dict, headers: dict, label: str) -> dict:
     delay = 2.0
     for attempt in range(4):
         try:
-            with urllib.request.urlopen(req, timeout=180) as r:
+            with urllib.request.urlopen(req, timeout=180, context=_ssl_context()) as r:
                 return json.loads(r.read().decode("utf-8"))
         except urllib.error.HTTPError as e:
             detail = e.read().decode("utf-8", errors="replace")[:300]
@@ -111,6 +128,8 @@ def _post_json(url: str, body: dict, headers: dict, label: str) -> dict:
                 continue
             raise RuntimeError(f"{label} HTTP {e.code}: {detail}") from None
         except urllib.error.URLError as e:
+            if "CERTIFICATE_VERIFY_FAILED" in str(e.reason):
+                raise RuntimeError(f"{label}: HTTPS 证书校验失败（{e.reason}）") from None
             if attempt < 3:
                 time.sleep(delay)
                 delay *= 2

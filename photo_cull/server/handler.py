@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from . import film
-
 import json
 import mimetypes
 import os
@@ -29,6 +27,7 @@ from ..edit.session import SESSION
 from ..edit.styles import add_user_lut, remove_user_lut
 from ..i18n import t
 from . import apps as _apps
+from . import film
 from .actions import (
     choose_folder,
     load_previous,

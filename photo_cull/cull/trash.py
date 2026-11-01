@@ -3,11 +3,9 @@ from __future__ import annotations
 import shutil
 from pathlib import Path
 
+from ..paths import TRASH_DIR  # noqa: F401  （没有 send2trash 时的退路文件夹）
 from .model import Photo
 from .xmp import sidecar_path
-
-from ..paths import TRASH_DIR  # noqa: F401  （没有 send2trash 时的退路文件夹）
-
 
 # ───────────────────────── 同步删除（移到废纸篓） ─────────────────────────
 

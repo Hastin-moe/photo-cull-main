@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from ..paths import WEB
-
 import csv
 import json
 import os
@@ -11,6 +9,7 @@ from pathlib import Path
 
 from .. import i18n
 from ..i18n import t
+from ..paths import WEB
 from ..version import VERSION
 from .ai.prompts import GENRE_LEGACY
 from .flags import flag_code, flag_text

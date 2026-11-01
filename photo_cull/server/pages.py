@@ -1,9 +1,5 @@
 from __future__ import annotations
 
-from . import film
-
-from ..paths import WEB
-
 import json
 import os
 import sys
@@ -11,9 +7,10 @@ from urllib.parse import quote  # noqa: E402
 
 from .. import i18n
 from ..i18n import t
+from ..paths import WEB
 from ..version import VERSION
+from . import film
 from .apps import _EXT, APP_NAMES, LOCAL, TOKEN
-
 
 STATIC_TYPES = {".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8",
                 ".svg": "image/svg+xml", ".png": "image/png", ".woff2": "font/woff2", ".json": "application/json"}

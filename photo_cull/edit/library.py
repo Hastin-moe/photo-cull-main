@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from ..paths import THUMB_DIR
-
 import hashlib
 import io
 import os
@@ -9,11 +7,12 @@ from pathlib import Path
 
 from PIL import Image
 
-from ..imaging.files import collect
 from ..i18n import t
 from ..imaging.exif import exposure_text, read_exif
+from ..imaging.files import collect
 from ..imaging.formats import RAW_EXT
 from ..imaging.preview import load_preview
+from ..paths import THUMB_DIR
 from .logspace import guess_space
 from .params import EDIT_EXT
 from .records import has_edit

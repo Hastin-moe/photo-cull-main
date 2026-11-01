@@ -8,9 +8,6 @@ from pathlib import Path
 
 from ..i18n import t
 from ..imaging.formats import RAW_EXT
-from .model import Photo, shown
-from .trash import trash_photo
-from .xmp import sidecar_path
 
 # ───────────────────────── 整理输出（分文件夹＋重命名） ─────────────────────────
 #
@@ -20,8 +17,13 @@ from .xmp import sidecar_path
 #   保留/可用/JPEG|RAW/…                 其余保留的（含连拍里没被选中的帧）
 #   淘汰/JPEG|RAW/…
 # 文件夹名按整理时的界面语言取，并记在整理记录里（dirs），之后在报告里改分数、删除时沿用。
+from ..paths import (
+    ORG_MANIFEST,  # noqa: E402  记录上次整理到哪里，重新整理时原地挪动而不是再复制一份
+)
+from .model import Photo, shown
+from .trash import trash_photo
+from .xmp import sidecar_path
 
-from ..paths import ORG_MANIFEST  # noqa: E402  记录上次整理到哪里，重新整理时原地挪动而不是再复制一份
 RAW_DIR, JPEG_DIR = "RAW", "JPEG"
 DIR_KEYS = ("keep", "reject", "pick", "moment", "usable", "group")
 
